@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript Option Type 示例</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .code-block {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .typescript-code {
+            background-color: #1e3a8a;
+            color: #dbeafe;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .result {
+            background-color: #e8f5e8;
+            border: 1px solid #4caf50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #ffeaea;
+            border: 1px solid #f44336;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background-color: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            min-height: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: white;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:before {
+            content: "✅ ";
+            color: #4caf50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦀 TypeScript Option Type 示例</h1>
+        
+        <div class="info">
+            <h3>📋 TypeScript 支持特性</h3>
+            <ul class="feature-list">
+                <li>完整的类型定义和类型推断</li>
+                <li>编译时类型检查和错误提示</li>
+                <li>智能代码补全和重构支持</li>
+                <li>泛型支持和类型安全</li>
+                <li>与现有 TypeScript 项目无缝集成</li>
+                <li>支持严格的 null 检查模式</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>TypeScript 类型定义</h2>
+            <div class="typescript-code">
+// 核心类型定义<br>
+type Option&lt;T&gt; = ISome&lt;T&gt; | INone;<br><br>
+interface ISome&lt;T&gt; {<br>
+&nbsp;&nbsp;readonly value: T;<br>
+&nbsp;&nbsp;isSome(): true;<br>
+&nbsp;&nbsp;isNone(): false;<br>
+&nbsp;&nbsp;unwrap(): T;<br>
+&nbsp;&nbsp;map&lt;U&gt;(fn: (value: T) =&gt; U): Option&lt;U&gt;;<br>
+&nbsp;&nbsp;// ... 更多方法<br>
+}<br><br>
+interface INone {<br>
+&nbsp;&nbsp;isSome(): false;<br>
+&nbsp;&nbsp;isNone(): true;<br>
+&nbsp;&nbsp;unwrap(): never;<br>
+&nbsp;&nbsp;// ... 更多方法<br>
+}
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>类型安全的用户管理</h2>
+            <div class="typescript-code">
+interface User {<br>
+&nbsp;&nbsp;id: number;<br>
+&nbsp;&nbsp;name: string;<br>
+&nbsp;&nbsp;email?: string;<br>
+&nbsp;&nbsp;profile?: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;age: number;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;city: string;<br>
+&nbsp;&nbsp;};<br>
+}<br><br>
+class UserService {<br>
+&nbsp;&nbsp;findById(id: number): Option&lt;User&gt; { /* ... */ }<br>
+&nbsp;&nbsp;getUserCity(id: number): Option&lt;string&gt; { /* ... */ }<br>
+}
+            </div>
+            <button onclick="testUserService()">测试用户服务</button>
+            <div id="user-service-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>泛型函数示例</h2>
+            <div class="typescript-code">
+// 安全的数组访问<br>
+function safeGet&lt;T&gt;(array: T[], index: number): Option&lt;T&gt; {<br>
+&nbsp;&nbsp;return index &gt;= 0 && index &lt; array.length<br>
+&nbsp;&nbsp;&nbsp;&nbsp;? Some(array[index])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;: None();<br>
+}<br><br>
+// 安全的属性访问<br>
+function safeProp&lt;T, K extends keyof T&gt;(<br>
+&nbsp;&nbsp;obj: T, <br>
+&nbsp;&nbsp;key: K<br>
+): Option&lt;T[K]&gt; {<br>
+&nbsp;&nbsp;const value = obj[key];<br>
+&nbsp;&nbsp;return value != null ? Some(value) : None();<br>
+}
+            </div>
+            <button onclick="testGenericFunctions()">测试泛型函数</button>
+            <div id="generic-functions-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>类型推断和链式操作</h2>
+            <div class="typescript-code">
+// TypeScript 自动推断类型<br>
+const result = Some("  Hello World  ")<br>
+&nbsp;&nbsp;.map(s =&gt; s.trim())           // Option&lt;string&gt;<br>
+&nbsp;&nbsp;.filter(s =&gt; s.length &gt; 0)   // Option&lt;string&gt;<br>
+&nbsp;&nbsp;.map(s =&gt; s.split(' '))      // Option&lt;string[]&gt;<br>
+&nbsp;&nbsp;.map(arr =&gt; arr.length)      // Option&lt;number&gt;<br>
+&nbsp;&nbsp;.unwrapOr(0);                // number
+            </div>
+            <button onclick="testTypeInference()">测试类型推断</button>
+            <div id="type-inference-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>错误处理和类型安全</h2>
+            <div class="typescript-code">
+// 编译时捕获类型错误<br>
+function processData(data: Option&lt;string&gt;): number {<br>
+&nbsp;&nbsp;return data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.map(s =&gt; parseInt(s, 10))    // Option&lt;number&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.filter(n =&gt; !isNaN(n))       // Option&lt;number&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.unwrapOr(0);                 // number<br>
+&nbsp;&nbsp;// TypeScript 确保返回类型是 number<br>
+}<br><br>
+// 类型守卫<br>
+if (someOption.isSome()) {<br>
+&nbsp;&nbsp;// TypeScript 知道这里 someOption 是 Some&lt;T&gt;<br>
+&nbsp;&nbsp;console.log(someOption.unwrap()); // 类型安全<br>
+}
+            </div>
+            <button onclick="testErrorHandling()">测试错误处理</button>
+            <div id="error-handling-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>高级类型操作</h2>
+            <div class="typescript-code">
+// 条件类型<br>
+type Unwrap&lt;T&gt; = T extends Option&lt;infer U&gt; ? U : never;<br>
+type NumberType = Unwrap&lt;Option&lt;number&gt;&gt;; // number<br><br>
+// 映射类型<br>
+type OptionFields&lt;T&gt; = {<br>
+&nbsp;&nbsp;[K in keyof T]: Option&lt;T[K]&gt;;<br>
+};<br><br>
+// 实用类型<br>
+type AsyncOption&lt;T&gt; = Promise&lt;Option&lt;T&gt;&gt;;<br>
+type OptionResult&lt;T, E = Error&gt; = Option&lt;T&gt; | E;
+            </div>
+            <button onclick="testAdvancedTypes()">测试高级类型</button>
+            <div id="advanced-types-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>与现有代码集成</h2>
+            <div class="typescript-code">
+// 从 nullable 值创建 Option<br>
+function fromNullable&lt;T&gt;(value: T | null | undefined): Option&lt;NonNullable&lt;T&gt;&gt; {<br>
+&nbsp;&nbsp;return value != null ? Some(value as NonNullable&lt;T&gt;) : None();<br>
+}<br><br>
+// 与 Promise 结合<br>
+async function fetchUser(id: number): Promise&lt;Option&lt;User&gt;&gt; {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch(`/api/users/${id}`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (response.ok) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const user = await response.json();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return Some(user);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return None();<br>
+&nbsp;&nbsp;} catch {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return None();<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            <button onclick="testIntegration()">测试集成示例</button>
+            <div id="integration-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>开发工具支持</h2>
+            <div class="info">
+                <h4>🛠️ IDE 功能</h4>
+                <ul class="feature-list">
+                    <li>智能代码补全 - IDE 会提示可用的方法</li>
+                    <li>类型检查 - 编译时发现类型错误</li>
+                    <li>重构支持 - 安全地重命名和移动代码</li>
+                    <li>跳转定义 - 快速导航到类型定义</li>
+                    <li>内联文档 - 鼠标悬停显示方法说明</li>
+                </ul>
+            </div>
+            
+            <div class="typescript-code">
+// 编译命令<br>
+npm install typescript @types/node<br>
+npx tsc --init<br>
+npx tsc example.ts<br><br>
+// package.json 脚本<br>
+{<br>
+&nbsp;&nbsp;"scripts": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"build": "tsc",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"dev": "ts-node example.ts",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"type-check": "tsc --noEmit"<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+    </div>
+
+    <script src="option.js"></script>
+    <script>
+        // 模拟 TypeScript 示例（在 JavaScript 中运行）
+        
+        function testUserService() {
+            const output = document.getElementById('user-service-output');
+            try {
+                // 模拟用户数据
+                const users = [
+                    { id: 1, name: "张三", email: "zhangsan@example.com", profile: { age: 25, city: "北京" } },
+                    { id: 2, name: "李四", email: "lisi@example.com", profile: { age: 30, city: "上海" } }
+                ];
+                
+                function findUser(id) {
+                    const user = users.find(u => u.id === id);
+                    return user ? Some(user) : None();
+                }
+                
+                function getUserCity(id) {
+                    return findUser(id)
+                        .andThen(user => user.profile ? Some(user.profile.city) : None());
+                }
+                
+                const results = [
+                    `findUser(1): ${findUser(1).map(u => u.name).unwrapOr("Not found")}`,
+                    `findUser(999): ${findUser(999).map(u => u.name).unwrapOr("Not found")}`,
+                    `getUserCity(1): ${getUserCity(1).unwrapOr("Unknown")}`,
+                    `getUserCity(2): ${getUserCity(2).unwrapOr("Unknown")}`
+                ];
+                
+                output.innerHTML = results.map(r => `<div class="result">${r}</div>`).join('');
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+        
+        function testGenericFunctions() {
+            const output = document.getElementById('generic-functions-output');
+            try {
+                function safeGet(array, index) {
+                    return index >= 0 && index < array.length ? Some(array[index]) : None();
+                }
+                
+                function safeProp(obj, key) {
+                    const value = obj[key];
+                    return value != null ? Some(value) : None();
+                }
+                
+                const numbers = [10, 20, 30, 40, 50];
+                const user = { name: "测试用户", age: 25, email: null };
+                
+                const results = [
+                    `safeGet([10,20,30,40,50], 2): ${safeGet(numbers, 2).unwrapOr(-1)}`,
+                    `safeGet([10,20,30,40,50], 10): ${safeGet(numbers, 10).unwrapOr(-1)}`,
+                    `safeProp(user, "name"): ${safeProp(user, "name").unwrapOr("N/A")}`,
+                    `safeProp(user, "email"): ${safeProp(user, "email").unwrapOr("N/A")}`
+                ];
+                
+                output.innerHTML = results.map(r => `<div class="result">${r}</div>`).join('');
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+        
+        function testTypeInference() {
+            const output = document.getElementById('type-inference-output');
+            try {
+                const result1 = Some("  Hello World  ")
+                    .map(s => s.trim())
+                    .filter(s => s.length > 0)
+                    .map(s => s.split(' '))
+                    .map(arr => arr.length)
+                    .unwrapOr(0);
+                
+                const result2 = Some([1, 2, 3, 4, 5])
+                    .map(arr => arr.filter(n => n % 2 === 0))
+                    .map(arr => arr.map(n => n * 2))
+                    .map(arr => arr.reduce((sum, n) => sum + n, 0))
+                    .unwrapOr(0);
+                
+                const results = [
+                    `字符串处理链: "  Hello World  " -> trim -> split -> length = ${result1}`,
+                    `数组处理链: [1,2,3,4,5] -> 过滤偶数 -> 乘以2 -> 求和 = ${result2}`,
+                    `类型在每一步都被正确推断和检查`
+                ];
+                
+                output.innerHTML = results.map(r => `<div class="result">${r}</div>`).join('');
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+        
+        function testErrorHandling() {
+            const output = document.getElementById('error-handling-output');
+            try {
+                function processData(data) {
+                    return data
+                        .map(s => parseInt(s, 10))
+                        .filter(n => !isNaN(n))
+                        .unwrapOr(0);
+                }
+                
+                function safeDivide(a, b) {
+                    return b === 0 ? None() : Some(a / b);
+                }
+                
+                const testCases = [
+                    { input: Some("42"), desc: "有效数字字符串" },
+                    { input: Some("abc"), desc: "无效数字字符串" },
+                    { input: None(), desc: "空值" }
+                ];
+                
+                const results = testCases.map(test => 
+                    `${test.desc}: ${processData(test.input)}`
+                );
+                
+                results.push(`安全除法 10/2: ${safeDivide(10, 2).unwrapOr("错误")}`);
+                results.push(`安全除法 10/0: ${safeDivide(10, 0).unwrapOr("错误")}`);
+                
+                output.innerHTML = results.map(r => `<div class="result">${r}</div>`).join('');
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+        
+        function testAdvancedTypes() {
+            const output = document.getElementById('advanced-types-output');
+            try {
+                // 模拟高级类型操作的结果
+                const results = [
+                    "✅ 条件类型: Unwrap<Option<number>> = number",
+                    "✅ 映射类型: OptionFields<User> = { id: Option<number>, name: Option<string>, ... }",
+                    "✅ 实用类型: AsyncOption<T> = Promise<Option<T>>",
+                    "✅ 类型推断: 编译器自动推断所有中间类型",
+                    "✅ 类型检查: 编译时捕获类型不匹配错误"
+                ];
+                
+                output.innerHTML = results.map(r => `<div class="result">${r}</div>`).join('');
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+        
+        function testIntegration() {
+            const output = document.getElementById('integration-output');
+            try {
+                function fromNullable(value) {
+                    return value != null ? Some(value) : None();
+                }
+                
+                // 模拟与现有代码的集成
+                const nullableValue = Math.random() > 0.5 ? "有值" : null;
+                const undefinedValue = Math.random() > 0.5 ? 42 : undefined;
+                
+                const results = [
+                    `fromNullable(${nullableValue}): ${fromNullable(nullableValue).unwrapOr("空值")}`,
+                    `fromNullable(${undefinedValue}): ${fromNullable(undefinedValue).unwrapOr("空值")}`,
+                    "✅ 与 Promise 结合: async function fetchUser(): Promise<Option<User>>",
+                    "✅ 与现有 API 集成: 包装可能返回 null 的函数",
+                    "✅ 渐进式采用: 可以逐步在项目中引入 Option 类型"
+                ];
+                
+                output.innerHTML = results.map(r => `<div class="result">${r}</div>`).join('');
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

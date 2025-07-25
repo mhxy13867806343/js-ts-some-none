@@ -1,0 +1,72 @@
+# Source files
+*.ts
+!*.d.ts
+tsconfig.json
+
+# Development files
+example.html
+test.html
+typescript-example.html
+example.ts
+test.ts
+
+# Build tools
+.eslintrc.*
+.prettierrc.*
+.editorconfig
+
+# Documentation (keep README.md)
+*.md
+!README.md
+
+# Development dependencies
+node_modules/
+.npm
+.yarn
+.pnpm
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+.nyc_output
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+.travis.yml
+.circleci/
+
+# Vercel
+.vercel/
+
+# Local env files
+.env*
+
+# Test files
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts

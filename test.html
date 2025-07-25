@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option Type - JavaScript 类型测试</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .test-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .result {
+            background-color: #e8f5e8;
+            border: 1px solid #4caf50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .error {
+            background-color: #ffeaea;
+            border: 1px solid #f44336;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .code {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 JavaScript 类型测试</h1>
+        
+        <div class="test-section">
+            <h3>基本类型测试</h3>
+            <div class="code">
+const numberOption = Some(42);<br>
+const stringOption = Some("Hello World");<br>
+const booleanOption = Some(true);<br>
+const nullOption = Some(null);<br>
+const undefinedOption = Some(undefined);
+            </div>
+            <button onclick="testBasicTypes()">测试基本类型</button>
+            <div id="basic-types-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>数组类型测试</h3>
+            <div class="code">
+const arrayOption = Some([1, 2, 3]);<br>
+const nestedArrayOption = Some([[1, 2], [3, 4]]);<br>
+const mixedArrayOption = Some([1, "hello", true, null]);
+            </div>
+            <button onclick="testArrayTypes()">测试数组类型</button>
+            <div id="array-types-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>对象类型测试</h3>
+            <div class="code">
+const objectOption = Some({ name: "张三", age: 25 });<br>
+const nestedObjectOption = Some({ user: { id: 1, profile: { name: "李四" } } });<br>
+const emptyObjectOption = Some({});
+            </div>
+            <button onclick="testObjectTypes()">测试对象类型</button>
+            <div id="object-types-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>函数类型测试</h3>
+            <div class="code">
+const namedFunctionOption = Some(function hello() { return "world"; });<br>
+const arrowFunctionOption = Some(() => "arrow function");<br>
+const anonymousFunctionOption = Some(function() { return "anonymous"; });
+            </div>
+            <button onclick="testFunctionTypes()">测试函数类型</button>
+            <div id="function-types-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>复杂表达式测试</h3>
+            <div class="code">
+const expressionOption1 = Some(5 + 3 * 2);<br>
+const expressionOption2 = Some([1, 2, 3].map(x => x * 2));<br>
+const expressionOption3 = Some({ result: Math.random() > 0.5 });
+            </div>
+            <button onclick="testExpressions()">测试表达式</button>
+            <div id="expressions-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>链式操作测试</h3>
+            <div class="code">
+Some([1, 2, 3, 4, 5])<br>
+&nbsp;&nbsp;.map(arr => arr.filter(x => x % 2 === 0))<br>
+&nbsp;&nbsp;.map(arr => arr.map(x => x * 2))<br>
+&nbsp;&nbsp;.filter(arr => arr.length > 0)<br>
+&nbsp;&nbsp;.unwrapOr([]);
+            </div>
+            <button onclick="testChaining()">测试链式操作</button>
+            <div id="chaining-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>模式匹配测试</h3>
+            <div class="code">
+function processAnyType(option) {<br>
+&nbsp;&nbsp;return match(option, [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Some, value => `类型: ${typeof value}, 值: ${value}`],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[None, () => "无值"]<br>
+&nbsp;&nbsp;]);<br>
+}
+            </div>
+            <button onclick="testPatternMatching()">测试模式匹配</button>
+            <div id="pattern-matching-result"></div>
+        </div>
+    </div>
+
+    <script src="option.js"></script>
+    <script>
+        function displayResult(elementId, results) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = results.map(result => 
+                `<div class="result">${result}</div>`
+            ).join('');
+        }
+
+        function displayError(elementId, error) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="error">错误: ${error}</div>`;
+        }
+
+        function testBasicTypes() {
+            try {
+                const results = [
+                    `Some(42): ${Some(42).toString()}`,
+                    `Some("Hello"): ${Some("Hello World").toString()}`,
+                    `Some(true): ${Some(true).toString()}`,
+                    `Some(null): ${Some(null).toString()}`,
+                    `Some(undefined): ${Some(undefined).toString()}`,
+                    `None(): ${None().toString()}`
+                ];
+                displayResult('basic-types-result', results);
+            } catch (e) {
+                displayError('basic-types-result', e.message);
+            }
+        }
+
+        function testArrayTypes() {
+            try {
+                const results = [
+                    `Some([1, 2, 3]): ${Some([1, 2, 3]).toString()}`,
+                    `Some([[1, 2], [3, 4]]): ${Some([[1, 2], [3, 4]]).toString()}`,
+                    `Some([1, "hello", true, null]): ${Some([1, "hello", true, null]).toString()}`,
+                    `Some([]): ${Some([]).toString()}`
+                ];
+                displayResult('array-types-result', results);
+            } catch (e) {
+                displayError('array-types-result', e.message);
+            }
+        }
+
+        function testObjectTypes() {
+            try {
+                const results = [
+                    `Some({ name: "张三", age: 25 }): ${Some({ name: "张三", age: 25 }).toString()}`,
+                    `Some({ user: { id: 1 } }): ${Some({ user: { id: 1, profile: { name: "李四" } } }).toString()}`,
+                    `Some({}): ${Some({}).toString()}`
+                ];
+                displayResult('object-types-result', results);
+            } catch (e) {
+                displayError('object-types-result', e.message);
+            }
+        }
+
+        function testFunctionTypes() {
+            try {
+                function hello() { return "world"; }
+                const results = [
+                    `Some(named function): ${Some(hello).toString()}`,
+                    `Some(arrow function): ${Some(() => "arrow function").toString()}`,
+                    `Some(anonymous function): ${Some(function() { return "anonymous"; }).toString()}`
+                ];
+                displayResult('function-types-result', results);
+            } catch (e) {
+                displayError('function-types-result', e.message);
+            }
+        }
+
+        function testExpressions() {
+            try {
+                const results = [
+                    `Some(5 + 3 * 2): ${Some(5 + 3 * 2).toString()}`,
+                    `Some([1,2,3].map(x => x * 2)): ${Some([1, 2, 3].map(x => x * 2)).toString()}`,
+                    `Some({ result: random }): ${Some({ result: Math.random() > 0.5 }).toString()}`
+                ];
+                displayResult('expressions-result', results);
+            } catch (e) {
+                displayError('expressions-result', e.message);
+            }
+        }
+
+        function testChaining() {
+            try {
+                const result = Some([1, 2, 3, 4, 5])
+                    .map(arr => arr.filter(x => x % 2 === 0))
+                    .map(arr => arr.map(x => x * 2))
+                    .filter(arr => arr.length > 0)
+                    .unwrapOr([]);
+                
+                const results = [
+                    `链式操作结果: [${result.join(', ')}]`,
+                    `原始数组 [1,2,3,4,5] -> 过滤偶数 -> 乘以2 -> 检查非空 -> 解包`
+                ];
+                displayResult('chaining-result', results);
+            } catch (e) {
+                displayError('chaining-result', e.message);
+            }
+        }
+
+        function testPatternMatching() {
+            try {
+                function processAnyType(option) {
+                    return match(option, [
+                        [Some, value => `类型: ${typeof value}, 值: ${option.toString()}`],
+                        [None, () => "无值"]
+                    ]);
+                }
+
+                const results = [
+                    processAnyType(Some(42)),
+                    processAnyType(Some("hello")),
+                    processAnyType(Some([1, 2, 3])),
+                    processAnyType(Some({ name: "test" })),
+                    processAnyType(Some(() => "function")),
+                    processAnyType(None())
+                ];
+                displayResult('pattern-matching-result', results);
+            } catch (e) {
+                displayError('pattern-matching-result', e.message);
+            }
+        }
+    </script>
+</body>
+</html>

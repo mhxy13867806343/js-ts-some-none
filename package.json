@@ -1,0 +1,83 @@
+{
+  "name": "vue-some-none",
+  "version": "1.0.0",
+  "description": "Rust-like Option type implementation for JavaScript and TypeScript with Vue 3.2+, React 16.8+ support",
+  "main": "option.js",
+  "type": "module",
+  "types": "option.d.ts",
+  "scripts": {
+    "dev": "ts-node --esm test.ts",
+    "test": "ts-node --esm test.ts",
+    "test:browser": "python3 -m http.server 8080",
+    "type-check": "tsc --noEmit",
+    "build": "tsc --declaration --emitDeclarationOnly --outDir dist",
+    "prepublishOnly": "npm run type-check && npm run test",
+    "demo": "python3 -m http.server 8080",
+    "clean": "rm -rf dist node_modules/.cache"
+  },
+  "keywords": [
+    "option",
+    "rust",
+    "functional",
+    "typescript",
+    "javascript",
+    "null-safety",
+    "vue",
+    "react",
+    "frontend",
+    "some",
+    "none",
+    "maybe",
+    "monad"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "option.js",
+    "option.d.ts",
+    "dist/",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mhxy13867806343/js-ts-some-none.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mhxy13867806343/js-ts-some-none/issues"
+  },
+  "homepage": "https://github.com/mhxy13867806343/js-ts-some-none",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "peerDependencies": {
+    "vue": ">=3.2.0",
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./option.d.ts",
+      "import": "./option.js",
+      "require": "./option.js"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

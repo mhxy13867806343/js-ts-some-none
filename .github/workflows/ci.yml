@@ -1,0 +1,125 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+        
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+        
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+        
+    - name: Setup pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+          
+    - name: Install dependencies
+      run: pnpm install
+      
+    - name: Run TypeScript check
+      run: pnpm run type-check
+      
+    - name: Run tests
+      run: pnpm test
+      
+    - name: Build
+      run: pnpm run build
+
+  compatibility:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        framework:
+          - name: "Vue 3.2"
+            version: "^3.2.0"
+          - name: "Vue 3.3"
+            version: "^3.3.0"
+          - name: "Vue 3.4"
+            version: "^3.4.0"
+          - name: "React 16.8"
+            version: "^16.8.0"
+          - name: "React 17"
+            version: "^17.0.0"
+          - name: "React 18"
+            version: "^18.0.0"
+            
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+        
+    - name: Install dependencies
+      run: pnpm install
+      
+    - name: Test ${{ matrix.framework.name }} compatibility
+      run: |
+        echo "Testing compatibility with ${{ matrix.framework.name }}"
+        pnpm run type-check
+        
+  publish:
+    needs: [test, compatibility]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        registry-url: 'https://registry.npmjs.org'
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+        
+    - name: Install dependencies
+      run: pnpm install
+      
+    - name: Build
+      run: pnpm run build
+      
+    - name: Publish to npm
+      run: pnpm publish --no-git-checks
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      if: contains(github.event.head_commit.message, '[release]')

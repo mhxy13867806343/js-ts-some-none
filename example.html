@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust-like Option Type in JavaScript</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .code-block {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .result {
+            background-color: #e8f5e8;
+            border: 1px solid #4caf50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #ffeaea;
+            border: 1px solid #f44336;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            min-height: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: white;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦀 Rust-like Option Type in JavaScript</h1>
+        
+        <div class="section">
+            <h2>基本用法 - Some 和 None</h2>
+            <div class="code-block">
+// 创建 Some 和 None 实例<br>
+const someValue = Some(42);<br>
+const noneValue = None();<br><br>
+console.log(someValue.toString()); // "Some(42)"<br>
+console.log(noneValue.toString()); // "None"
+            </div>
+            <button onclick="runBasicExample()">运行示例</button>
+            <div id="basic-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>安全解包 - unwrap 和 unwrapOr</h2>
+            <div class="code-block">
+// 安全解包值<br>
+const value1 = Some("Hello").unwrap(); // "Hello"<br>
+const value2 = Some("World").unwrapOr("Default"); // "World"<br>
+const value3 = None().unwrapOr("Default"); // "Default"<br><br>
+// 尝试解包 None 会抛出错误<br>
+try {<br>
+&nbsp;&nbsp;None().unwrap();<br>
+} catch (e) {<br>
+&nbsp;&nbsp;console.log("错误:", e.message);<br>
+}
+            </div>
+            <button onclick="runUnwrapExample()">运行示例</button>
+            <div id="unwrap-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>函数式编程 - map 和 filter</h2>
+            <div class="code-block">
+// 使用 map 转换值<br>
+const doubled = Some(5).map(x => x * 2); // Some(10)<br>
+const noneDoubled = None().map(x => x * 2); // None<br><br>
+// 使用 filter 过滤值<br>
+const evenNumber = Some(4).filter(x => x % 2 === 0); // Some(4)<br>
+const oddNumber = Some(3).filter(x => x % 2 === 0); // None
+            </div>
+            <button onclick="runMapExample()">运行示例</button>
+            <div id="map-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>链式操作 - andThen</h2>
+            <div class="code-block">
+// 安全的除法函数<br>
+function safeDivide(a, b) {<br>
+&nbsp;&nbsp;return b === 0 ? None() : Some(a / b);<br>
+}<br><br>
+// 链式操作<br>
+const result1 = Some(10)<br>
+&nbsp;&nbsp;.andThen(x => safeDivide(x, 2))<br>
+&nbsp;&nbsp;.andThen(x => safeDivide(x, 2)); // Some(2.5)<br><br>
+const result2 = Some(10)<br>
+&nbsp;&nbsp;.andThen(x => safeDivide(x, 0))<br>
+&nbsp;&nbsp;.andThen(x => safeDivide(x, 2)); // None
+            </div>
+            <button onclick="runChainExample()">运行示例</button>
+            <div id="chain-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>模式匹配 - match</h2>
+            <div class="code-block">
+// 使用 match 进行模式匹配<br>
+function processOption(opt) {<br>
+&nbsp;&nbsp;return match(opt, [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Some, value => `找到值: ${value}`],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[None, () => "没有值"]<br>
+&nbsp;&nbsp;]);<br>
+}<br><br>
+const msg1 = processOption(Some("数据")); // "找到值: 数据"<br>
+const msg2 = processOption(None()); // "没有值"
+            </div>
+            <button onclick="runMatchExample()">运行示例</button>
+            <div id="match-output" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>实际应用示例 - 用户查找</h2>
+            <div class="code-block">
+// 模拟用户数据库<br>
+const users = [<br>
+&nbsp;&nbsp;{ id: 1, name: "张三", email: "zhangsan@example.com" },<br>
+&nbsp;&nbsp;{ id: 2, name: "李四", email: "lisi@example.com" }<br>
+];<br><br>
+// 安全的用户查找函数<br>
+function findUserById(id) {<br>
+&nbsp;&nbsp;const user = users.find(u => u.id === id);<br>
+&nbsp;&nbsp;return user ? Some(user) : None();<br>
+}<br><br>
+// 获取用户邮箱<br>
+function getUserEmail(id) {<br>
+&nbsp;&nbsp;return findUserById(id)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.map(user => user.email)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.unwrapOr("未找到用户");<br>
+}
+            </div>
+            <button onclick="runUserExample()">运行示例</button>
+            <div id="user-output" class="output"></div>
+        </div>
+    </div>
+
+    <script src="option.js"></script>
+    <script>
+        function runBasicExample() {
+            const output = document.getElementById('basic-output');
+            try {
+                const someValue = Some(42);
+                const noneValue = None();
+                
+                output.innerHTML = `
+                    <div class="result">
+                        someValue.toString(): ${someValue.toString()}<br>
+                        noneValue.toString(): ${noneValue.toString()}<br>
+                        someValue.isSome(): ${someValue.isSome()}<br>
+                        noneValue.isNone(): ${noneValue.isNone()}
+                    </div>
+                `;
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+
+        function runUnwrapExample() {
+            const output = document.getElementById('unwrap-output');
+            try {
+                const value1 = Some("Hello").unwrap();
+                const value2 = Some("World").unwrapOr("Default");
+                const value3 = None().unwrapOr("Default");
+                
+                let errorMsg = "";
+                try {
+                    None().unwrap();
+                } catch (e) {
+                    errorMsg = e.message;
+                }
+                
+                output.innerHTML = `
+                    <div class="result">
+                        Some("Hello").unwrap(): ${value1}<br>
+                        Some("World").unwrapOr("Default"): ${value2}<br>
+                        None().unwrapOr("Default"): ${value3}<br>
+                        None().unwrap() 错误: ${errorMsg}
+                    </div>
+                `;
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+
+        function runMapExample() {
+            const output = document.getElementById('map-output');
+            try {
+                const doubled = Some(5).map(x => x * 2);
+                const noneDoubled = None().map(x => x * 2);
+                const evenNumber = Some(4).filter(x => x % 2 === 0);
+                const oddNumber = Some(3).filter(x => x % 2 === 0);
+                
+                output.innerHTML = `
+                    <div class="result">
+                        Some(5).map(x => x * 2): ${doubled.toString()}<br>
+                        None().map(x => x * 2): ${noneDoubled.toString()}<br>
+                        Some(4).filter(x => x % 2 === 0): ${evenNumber.toString()}<br>
+                        Some(3).filter(x => x % 2 === 0): ${oddNumber.toString()}
+                    </div>
+                `;
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+
+        function runChainExample() {
+            const output = document.getElementById('chain-output');
+            try {
+                function safeDivide(a, b) {
+                    return b === 0 ? None() : Some(a / b);
+                }
+                
+                const result1 = Some(10)
+                    .andThen(x => safeDivide(x, 2))
+                    .andThen(x => safeDivide(x, 2));
+                    
+                const result2 = Some(10)
+                    .andThen(x => safeDivide(x, 0))
+                    .andThen(x => safeDivide(x, 2));
+                
+                output.innerHTML = `
+                    <div class="result">
+                        Some(10) -> /2 -> /2: ${result1.toString()}<br>
+                        Some(10) -> /0 -> /2: ${result2.toString()}
+                    </div>
+                `;
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+
+        function runMatchExample() {
+            const output = document.getElementById('match-output');
+            try {
+                function processOption(opt) {
+                    return match(opt, [
+                        [Some, value => `找到值: ${value}`],
+                        [None, () => "没有值"]
+                    ]);
+                }
+                
+                const msg1 = processOption(Some("数据"));
+                const msg2 = processOption(None());
+                
+                output.innerHTML = `
+                    <div class="result">
+                        processOption(Some("数据")): ${msg1}<br>
+                        processOption(None()): ${msg2}
+                    </div>
+                `;
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+
+        function runUserExample() {
+            const output = document.getElementById('user-output');
+            try {
+                const users = [
+                    { id: 1, name: "张三", email: "zhangsan@example.com" },
+                    { id: 2, name: "李四", email: "lisi@example.com" }
+                ];
+                
+                function findUserById(id) {
+                    const user = users.find(u => u.id === id);
+                    return user ? Some(user) : None();
+                }
+                
+                function getUserEmail(id) {
+                    return findUserById(id)
+                        .map(user => user.email)
+                        .unwrapOr("未找到用户");
+                }
+                
+                const email1 = getUserEmail(1);
+                const email2 = getUserEmail(999);
+                
+                output.innerHTML = `
+                    <div class="result">
+                        getUserEmail(1): ${email1}<br>
+                        getUserEmail(999): ${email2}<br>
+                        findUserById(1): ${findUserById(1).toString()}<br>
+                        findUserById(999): ${findUserById(999).toString()}
+                    </div>
+                `;
+            } catch (e) {
+                output.innerHTML = `<div class="error">错误: ${e.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
