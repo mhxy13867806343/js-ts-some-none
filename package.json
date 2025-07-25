@@ -13,6 +13,7 @@
     "build": "tsc --declaration --emitDeclarationOnly --outDir dist",
     "prepublishOnly": "npm run type-check && npm run test",
     "demo": "python3 -m http.server 8080",
+    "demo:browser": "python3 -m http.server 8080 && open http://localhost:8080/browser-example.html",
     "clean": "rm -rf dist node_modules/.cache"
   },
   "keywords": [

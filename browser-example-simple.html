@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Some None - 浏览器示例</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .feature-card {
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        .output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            min-height: 60px;
+            margin-top: 10px;
+        }
+        
+        .output.result {
+            background: #27ae60;
+        }
+        
+        .output.error {
+            background: #e74c3c;
+        }
+        
+        .demo-controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .demo-controls button {
+            margin: 0 10px;
+            font-size: 16px;
+            padding: 12px 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Vue Some None</h1>
+        <p class="subtitle">Rust 风格的 Option 类型 - 浏览器示例</p>
+        
+        <div class="demo-grid">
+            <div class="feature-card">
+                <h3>🔍 基本操作</h3>
+                <button onclick="runBasicExample()">运行基本示例</button>
+                <div id="basic-output" class="output"></div>
+            </div>
+
+            <div class="feature-card">
+                <h3>🔗 链式操作</h3>
+                <button onclick="runChainExample()">运行链式示例</button>
+                <div id="chain-output" class="output"></div>
+            </div>
+
+            <div class="feature-card">
+                <h3>🎯 模式匹配</h3>
+                <button onclick="runMatchExample()">运行匹配示例</button>
+                <div id="match-output" class="output"></div>
+            </div>
+
+            <div class="feature-card">
+                <h3>🛡️ 错误处理</h3>
+                <button onclick="runErrorExample()">运行错误处理</button>
+                <div id="error-output" class="output"></div>
+            </div>
+        </div>
+
+        <div class="demo-controls">
+            <button onclick="runAllExamples()">🚀 运行所有示例</button>
+            <button onclick="clearAllOutputs()">🧹 清空输出</button>
+        </div>
+    </div>
+
+    <script src="./option.js"></script>
+    <script>
+        // 等待 option.js 加载完成
+        window.addEventListener('load', function() {
+            console.log('✅ Option 模块加载成功');
+        });
+
+        // 示例函数
+        function runBasicExample() {
+            const output = document.getElementById('basic-output');
+            try {
+                const user = Some({ name: '张三', age: 25 });
+                const empty = None();
+                
+                const result = [
+                    '创建用户: ' + user.toString(),
+                    '创建空值: ' + empty.toString(),
+                    '用户存在: ' + user.isSome(),
+                    '空值存在: ' + empty.isSome(),
+                    '获取用户名: ' + user.map(function(u) { return u.name; }).unwrapOr('未知'),
+                    '获取空值: ' + empty.unwrapOr('默认值')
+                ].join('\n');
+                
+                output.textContent = result;
+                output.className = 'output result';
+            } catch (error) {
+                output.textContent = '错误: ' + error.message;
+                output.className = 'output error';
+            }
+        }
+
+        function runChainExample() {
+            const output = document.getElementById('chain-output');
+            try {
+                const numbers = [1, 2, 3, 4, 5];
+                
+                const result = Some(numbers)
+                    .filter(function(arr) { return arr.length > 0; })
+                    .map(function(arr) { return arr.filter(function(n) { return n % 2 === 0; }); })
+                    .filter(function(arr) { return arr.length > 0; })
+                    .map(function(arr) { return arr.reduce(function(sum, n) { return sum + n; }, 0); })
+                    .map(function(sum) { return '偶数之和: ' + sum; })
+                    .unwrapOr('没有偶数');
+                
+                const evenNumbers = numbers.filter(function(n) { return n % 2 === 0; });
+                const sum = evenNumbers.reduce(function(sum, n) { return sum + n; }, 0);
+                
+                const chainSteps = [
+                    '原始数组: [' + numbers.join(', ') + ']',
+                    '过滤偶数: [' + evenNumbers.join(', ') + ']',
+                    '计算和: ' + sum,
+                    '最终结果: ' + result
+                ].join('\n');
+                
+                output.textContent = chainSteps;
+                output.className = 'output result';
+            } catch (error) {
+                output.textContent = '错误: ' + error.message;
+                output.className = 'output error';
+            }
+        }
+
+        function runMatchExample() {
+            const output = document.getElementById('match-output');
+            try {
+                const testCases = [
+                    Some('Hello World'),
+                    Some(42),
+                    Some([1, 2, 3]),
+                    None()
+                ];
+                
+                const results = testCases.map(function(option, index) {
+                    if (option.isSome()) {
+                        const value = option.unwrap();
+                        var result;
+                        if (typeof value === 'string') {
+                            result = '字符串: "' + value + '" (长度: ' + value.length + ')';
+                        } else if (typeof value === 'number') {
+                            result = '数字: ' + value + ' (' + (value % 2 === 0 ? '偶数' : '奇数') + ')';
+                        } else if (Array.isArray(value)) {
+                            result = '数组: [' + value.join(', ') + '] (长度: ' + value.length + ')';
+                        } else {
+                            result = '其他类型: ' + typeof value;
+                        }
+                    } else {
+                        result = '空值 - 没有数据';
+                    }
+                    return '案例 ' + (index + 1) + ': ' + result;
+                }).join('\n');
+                
+                output.textContent = results;
+                output.className = 'output result';
+            } catch (error) {
+                output.textContent = '错误: ' + error.message;
+                output.className = 'output error';
+            }
+        }
+
+        function runErrorExample() {
+            const output = document.getElementById('error-output');
+            try {
+                // 模拟可能失败的操作
+                function parseJSON(str) {
+                    try {
+                        return Some(JSON.parse(str));
+                    } catch {
+                        return None();
+                    }
+                }
+                
+                function safeArrayAccess(arr, index) {
+                    if (arr && index >= 0 && index < arr.length) {
+                        return Some(arr[index]);
+                    } else {
+                        return None();
+                    }
+                }
+                
+                const testCases = [
+                    '{"name": "张三", "age": 25}',
+                    'invalid json',
+                    '[1, 2, 3, 4, 5]'
+                ];
+                
+                const results = testCases.map(function(json, index) {
+                    const parsed = parseJSON(json);
+                    const result = parsed
+                        .andThen(function(data) {
+                            if (Array.isArray(data)) {
+                                return safeArrayAccess(data, 2).map(function(val) { 
+                                    return '数组第3个元素: ' + val; 
+                                });
+                            } else if (data.name) {
+                                return Some('用户: ' + data.name + ', 年龄: ' + data.age);
+                            } else {
+                                return None();
+                            }
+                        })
+                        .unwrapOr('解析失败或数据无效');
+                    
+                    return '测试 ' + (index + 1) + ': ' + result;
+                }).join('\n');
+                
+                output.textContent = results;
+                output.className = 'output result';
+            } catch (error) {
+                output.textContent = '错误: ' + error.message;
+                output.className = 'output error';
+            }
+        }
+
+        function runAllExamples() {
+            runBasicExample();
+            runChainExample();
+            runMatchExample();
+            runErrorExample();
+        }
+
+        function clearAllOutputs() {
+            const outputs = document.querySelectorAll('.output');
+            outputs.forEach(function(output) {
+                output.textContent = '';
+                output.className = 'output';
+            });
+        }
+    </script>
+</body>
+</html>

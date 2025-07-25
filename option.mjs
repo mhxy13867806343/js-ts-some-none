@@ -1,5 +1,5 @@
 /**
- * JavaScript implementation of Rust's Option type
+ * JavaScript implementation of Rust's Option type - ES Module version
  * Provides Some and None variants for handling optional values
  */
 
@@ -89,6 +89,16 @@ class Option {
       value: this.isSome() ? this.value : undefined
     };
   }
+
+  // Pattern matching method
+  match(patterns) {
+    if (this.isSome() && patterns.Some) {
+      return patterns.Some(this.value);
+    } else if (this.isNone() && patterns.None) {
+      return patterns.None();
+    }
+    throw new Error('Non-exhaustive patterns in match');
+  }
 }
 
 // Some variant - contains a value
@@ -169,18 +179,5 @@ function match(option, patterns) {
   throw new Error('Non-exhaustive patterns in match');
 }
 
-// Browser global compatibility (first for immediate availability)
-if (typeof window !== 'undefined') {
-  window.Option = Option;
-  window.Some = Some;
-  window.None = None;
-  window.match = match;
-}
-
-// CommonJS compatibility
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { Option, Some, None, match };
-}
-
-// Note: ES Module exports are handled in a separate module file
-// For ES module support, use: import { Option, Some, None, match } from './option.mjs'
+// ES Module exports
+export { Option, Some, None, match };

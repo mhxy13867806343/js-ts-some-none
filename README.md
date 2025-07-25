@@ -242,10 +242,85 @@ function safeJsonParse<T = any>(jsonString: string): Option<T> {
 
 ## 🔧 环境要求
 
+### 服务器环境
 - **Node.js**: 16.0.0+
 - **Vue**: 3.2.0+ (如果在 Vue 项目中使用)
 - **React**: 16.8.0+ (如果在 React 项目中使用)
 - **TypeScript**: 4.5.0+ (可选，但推荐)
+
+### 浏览器环境
+- **Chrome**: 90+ (2021年4月)
+- **Firefox**: 88+ (2021年4月)
+- **Safari**: 14+ (2020年9月)
+- **Edge**: 90+ (2021年4月)
+- **所需特性**: ES2020 模块、可选链操作符、空值合并操作符
+
+### 纯 HTML 浏览器使用
+
+#### 现代浏览器 (推荐)
+
+使用 ES 模块语法，需要通过 HTTP 服务器访问：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Option Type 示例</title>
+</head>
+<body>
+    <script type="module">
+        import { Some, None } from './option.js';
+        
+        const user = Some({ name: '张三', age: 25 });
+        console.log(user.map(u => u.name).unwrapOr('未知'));
+        
+        // 异步示例
+        async function fetchUser(id) {
+            // 模拟 API 调用
+            const users = { 1: { name: '李四' } };
+            return users[id] ? Some(users[id]) : None();
+        }
+        
+        const result = await fetchUser(1);
+        console.log(result.unwrapOr('用户不存在'));
+    </script>
+</body>
+</html>
+```
+
+#### 传统浏览器兼容
+
+使用全局变量方式：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="./option.js"></script>
+</head>
+<body>
+    <script>
+        const user = Some({ name: '张三', age: 25 });
+        console.log(user.map(u => u.name).unwrapOr('未知'));
+    </script>
+</body>
+</html>
+```
+
+#### 完整浏览器示例
+
+查看 `browser-example.html` 获取完整的浏览器使用示例，包含：
+- 浏览器兼容性检查
+- 交互式演示
+- 错误处理示例
+- 异步操作示例
+
+```bash
+# 启动本地服务器查看示例
+python3 -m http.server 8080
+# 然后访问 http://localhost:8080/browser-example.html
+```
 
 ## 📦 包管理器支持
 
